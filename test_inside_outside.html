@@ -1,0 +1,254 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.min.js"></script>
+<script language="javascript" type="text/javascript">
+//BAES Akira, Sci. Comp. MA1 Matr. 000363304
+//INFO-F-420: Computational Geometry - Inside and Tangents
+//NOTE : 
+//Sorting clockwise : O(n*log(n)) = quicksort with angle
+//Finding inside : O(log2(n)) = bin search on angles
+//Finding tangents : Could NOT make it binary, so I have an algo in O(n+2)...
+//To make it binary I need to split my list in two based on distance compared to q,
+//but I felt this was a O(n) as well (find the min and max distance from q in list)...
+
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+    
+
+var points = [new Point( 207 , 178 ),
+	new Point( 294 , 87 ),new Point( 270 , 282 ),
+	new Point( 435 , 99 ),new Point( 469 , 257 ),
+	new Point( 384 , 306 ),new Point( 476 , 154 )];
+var testPoint = new Point(0,0);
+var inside = false;
+var tangent1 = -1;
+var tangent2 = -1;
+
+
+var origin = points[2];//findMinX(points);
+//Can be an arbitrary point à priori
+points.sort(sortByXYO);
+
+function setup() {
+    createCanvas(640, 480);
+    fill('black');
+}
+
+function draw() {
+    background(200);
+    fill('black');
+    for (i in points) {
+		ellipse(points[i].x,points[i].y,4,4);
+		text(i,points[i].x,points[i].y);
+    }
+	for(i=0; i<points.length-1; i++){
+		line(points[i].x,points[i].y,points[i+1].x,points[i+1].y);
+	}
+	
+	if(tangent1!==-1){
+		line(testPoint.x,testPoint.y,points[tangent1].x,points[tangent1].y);
+	}
+	
+	if(tangent2!==-1){
+		line(testPoint.x,testPoint.y,points[tangent2].x,points[tangent2].y);
+	}
+	
+	fill('red');
+	line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
+	ellipse(testPoint.x,testPoint.y,4,4);
+	
+	var name = "("+testPoint.x+";"+testPoint.y+")";
+	if(inside){
+		fill('green');
+		text(name+" is inside of the shape!",32,32);
+	}
+	else{
+		text(name+" is outside of the shape!",32,32);
+	}
+
+	fill('green');
+	ellipse(origin.x,origin.y,4,4);
+	
+	
+	///text(pointAngle(new Point(128,64),new Point(64,64),new Point(mouseX,mouseY)),32,64);
+}
+
+
+
+function mousePressed() {
+	if(mouseButton === LEFT){
+		testPoint = new Point(mouseX,mouseY);
+		inside = testInside();
+		if(inside){
+			tangent1=-1; 
+			tangent2=-1;
+			}
+		else{
+			setTangents();
+		}
+	}
+}
+
+
+
+
+function sortByX(pointA,pointB){
+	return pointA.x>pointB.x || pointA.y>pointB.y;
+}
+
+function sortByXYO(pointA,pointB){
+	//Comparator used to sort clockwise
+	//Origin being a predetermined arbitrary point part of the shape's hull
+	//Doesn't work well...
+	if(origin == pointA){
+		return false;
+	}
+	if(origin == pointB){
+		return true;
+	}
+	return pointAngle(pointA,origin,pointB) > 0;
+}
+function sortByXYO_old(pointA,pointB){
+	//Comparator used to sort clockwise starting from left
+	//= Sort by X for points with an Y over the Origin, by reverse-X for points under the Origin
+	//The Origin is the point that has the smallest X
+	//Sort trough with the default sort, probably a variation of Quicksort in average O(n*log(n))
+	//But requires to find the minimum beforehand
+	
+	//Note: error : if there are points that are in descending order but OVER O.y, they will be missorted
+	var yy = origin.y;
+	if(pointA.y<=yy){
+		if(pointB.y>yy){
+			return false;
+			}
+		else{
+			return pointA.x>pointB.x;
+		}
+	}
+	else{
+		if(pointB.y<=yy){
+			return true;
+		}
+		else{
+			return pointA.x<pointB.x;
+		}
+	}
+}
+
+
+function pointAngle(a,b,c){
+	//Course formula: [AB]x[BC] product
+	return ((b.x-a.x)*(c.y-b.y) - (b.y-a.y)*(c.x-b.x));
+}
+
+
+
+function testInside() {
+	//Returns if testPoint is inside of shape made of sorted list of points 
+	//With leftmost point being origin
+	//Runs as binary search on a sorted list in O(log2(n))
+	feedback = ""; //Special prints if on the left for example
+	/*
+	if(testPoint.x < origin.x){ //Trivial test Removed if origin is arbitrary and not the min
+		feedback = "left";
+		console.log("X smaller than smallest X: outside");
+		return false;
+	}*/
+	origin = points[0];
+	var L = 1; //Point just over the origin
+	var R = points.length-1; //Point just under the origin
+	//console.log("L=",L,"R=",R);
+	
+	if(pointAngle(origin,points[L],testPoint)<0){ //Trivial test
+		console.log("Left from L="+L+": outside");
+		return false;
+	}
+	if(pointAngle(origin,points[R],testPoint)>1){ //Trivial test
+		console.log("Right from R="+R+": outside");
+		return false;
+	}
+	
+	while(L<R-1){ //Binary search
+		var M = Math.round((L+R) /2);
+		//console.log("M=",M);
+		if(pointAngle(origin,points[M],testPoint)>0){
+			L=M;
+			}
+		else{
+			R=M;
+		}
+		//console.log("L=",L,"R=",R);
+	}
+	//console.log("Between L=",L,"and R=",R);
+	
+	//Once we have the two radius points, we look if it's on the "left" or the "right" of the side
+	if(pointAngle(points[R],points[L],testPoint)>=0){
+		console.log("Right from the ["+R+";"+L+"] segment: outside");
+		return false;
+	}
+	else{
+		console.log("Left from the ["+R+";"+L+"] segment: inside!");
+		return true;
+	}
+
+}
+
+function setTangents(){
+	//Could not manage to make it like a binary search, so here is a O(n+2) algorithm
+	l = points.length -1;
+	tangent1=-1;
+	tangent2=-1;
+	var grow = 0;
+	
+	for(c=1; c<=points.length+1; c++){
+		var i = c %(points.length)
+		var j = (c+1)%(points.length);
+		var now = pointAngle(points[i],testPoint,points[j]);
+		
+		if(sign(now) != grow){
+			if(sign(now)===-1){tangent1=i;}
+			if(sign(now)===1){tangent2=i;}
+			//if zero, change value but don't save
+			grow = sign(now);
+		}
+	}
+	
+}
+
+
+function sign(x) {
+	//Javascript doesn't have that
+	return parseInt(x<0?-1:(x==0?0:1));
+}
+
+
+/*
+function findMinX(pointsList) {
+	//Unused
+	//Min X of a list in O(n)
+	var point = pointsList[0];
+	
+	for(i=1; i<pointsList.length; i++){
+		if(pointsList[i].x <= point.x){ //Smallest X
+			if(pointsList[i].x !== point.x || pointsList[i].y < point.y){
+				//If equal X, smallest Y
+				point = pointsList[i];
+			}
+		}
+	}
+	return point;
+}
+*/
+
+</script>
+<style> body {padding: 0; margin: 0;} </style>
+</head>
+
+<body>
+</body>
+</html>
