@@ -15,20 +15,51 @@
 		<div class="container">
     		<div class="blurb">
 				<p>BAES Akira, Computer Science MA1</p>
-        		<h1>Under construction</h1>
-				<p>[TODO - explanation of tesselation/tiling]</p>
-<p>This work is focused around regular-faced polyhedrons for which some nets are mosaics or tiling patterns.<br />Such polyhedrons are called Tessellation Polyhedra with Regular Polygonal Faces and are the following[1]:<br />[1]Determination of all Tessellation Polyhedra with Regular Polygonal Faces : Jin Akiyama, Takayasu Kuwata, Stefan Langerman, Kenji Okawa, Ikuro Sato, Geoffrey C. Shephard</p>
-<p>Tetrahedron<br />Cube<br />Octahedron<br />Isocahedron<br />Hexagonal antiprism<br />Square pyramid (j1)<br />Elongated square pyramid (j8)<br />Gyroelongated square pyramid (j10)<br />Triangular dipyramid (j12)<br />Pentagonal dipyramid (j13)<br />Elongated triangular dipyramid (j14)<br />Elongated square dipyramid (j15)<br />Elongated pentagonal dipyramid (j16)<br />Gyroelongated square dipyramid (j17)<br />Augmented triangular prism (j49)<br />Biaugmented triangular prism (j50)<br />Triaugmented triangular prism (j51)<br />Snub disphenoid (j84)<br />Sphenocorona (j86)<br />Augmented sphenocorona (j87)<br />Sphenomegacorona (j88)<br />Hebesphenomegacorona (j89)<br />Disphenocingulum (j90)</p>
-<p>The goal of this project is double:<br />1) Rewrite the code provided by my teacher which was used to determine if a Polyhedron had a tileable net, to produce all tileable nets of one Tesselation Polyhedron.<br />2) Determine if the given tiling can be "rolled" into in order to "roll" on the whole plane, by rolling the Polyhedron into its faces on its nets.</p>
+        		<h1>Rolling a Tesselation Polyhedron in its Tiling Net [unfinished]</h1>
+<p>This work is focused around <strong>regular-faced polyhedrons for which some nets are mosaics or tiling patterns</strong>.</p>
+<p>Such polyhedrons are called <strong>Tessellation Polyhedra with Regular Polygonal Faces</strong> and are the following:<br />(From "Determination of all Tessellation Polyhedra with Regular Polygonal Faces")</p>
+<ul>
+<li>Tetrahedron</li>
+<li>Cube</li>
+<li>Octahedron</li>
+<li>Isocahedron</li>
+<li>Hexagonal antiprism</li>
+<li>Square pyramid (j1)</li>
+<li>Elongated square pyramid (j8)</li>
+<li>Gyroelongated square pyramid (j10)</li>
+<li>Triangular dipyramid (j12)</li>
+<li>Pentagonal dipyramid (j13)</li>
+<li>Elongated triangular dipyramid (j14)</li>
+<li>Elongated square dipyramid (j15)</li>
+<li>Elongated pentagonal dipyramid (j16)</li>
+<li>Gyroelongated square dipyramid (j17)</li>
+<li>Augmented triangular prism (j49)</li>
+<li>Biaugmented triangular prism (j50)</li>
+<li>Triaugmented triangular prism (j51)</li>
+<li>Snub disphenoid (j84)</li>
+<li>Sphenocorona (j86)</li>
+<li>Augmented sphenocorona (j87)</li>
+<li>Sphenomegacorona (j88)</li>
+<li>Hebesphenomegacorona (j89)</li>
+<li>Disphenocingulum (j90)</li>
+</ul>
+<p>The goal of this project is double:<br />1) Rewrite the code provided by my teacher which was used to determine if a Polyhedron had a tileable net, to produce all tileable nets of one Tesselation Polyhedron.</p>
+<p>Note: at this point of the project, I was unable to fullfill point 1.</p>
+<p>2) Determine if the given tiling can be "rolled" into in order to "roll" on the whole plane, by rolling the Polyhedron into its faces on its nets.</p>
 <p>In order to do 1) I simplified the set of the nets stiching I was looking for. When testing, all tesselation found so far have been symmetrical with each tile identical, meaning that they<br />-Contain translations and rotations, but no reflexion/mirroring<br />-Can be defined by the description of a single tile's neighbours, which are then repeated to create the pattern.<br />If every tesselation possible with the given shapes can be represented by this model is still an open question. (This model cannot represent central symmetry, or non-periodic patterns)</p>
-<p>A Regular-Faced Polyhedron can be represented as a dictionary of faces and their adjacent faces:<br />J1R = { #order is clockwise<br /> 0: [1,2,3,4],<br /> 1: [0,4,2],<br /> 2: [1,3,0],<br /> 3: [0,2,4],<br /> 4: [0,3,1]<br />}<br />Based on this, I represent a tile's pattern as:<br />J1N = { #order is clockwise<br /> 0: [1,0-p,3,0+p],<br /> 1: [0,2+p,2],<br /> 2: [1,4+2*p,1-p],<br /> 3: [0,4-p,4],<br /> 4: [3+p,3,2-2*p]<br />}</p>
+<p>A Regular-Faced Polyhedron can be represented as a dictionary of faces and their adjacent faces:<br />J1R = { #order is clockwise<br /> 0: [1,2,3,4],<br /> 1: [0,4,2],<br /> 2: [1,3,0],<br /> 3: [0,2,4],<br /> 4: [0,3,1]<br />}</p>
+<p>Based on this, I represent a tile's pattern as:<br />J1N = { #order is clockwise<br /> 0: [1,0-p,3,0+p],<br /> 1: [0,2+p,2],<br /> 2: [1,4+2*p,1-p],<br /> 3: [0,4-p,4],<br /> 4: [3+p,3,2-2*p]<br />}</p>
+<p><img src="j1_pyramid_n.png" alt="Representation of a pyramid's tiling pattern" /></p>
 <p>Internal neighbours are the number of the adjacent face on the net. External neighbours are differenciated by adding a multiple of p being the number of sides of the polyhedron to the neighbour's number. The multiple is used to show which adjacent shape is touching, in case the same shape is several times a neighbour. <br />In case a shape is its own neighbour, the inverted sign of this represent which side is linked.<br />This information is enough to create the tile pattern as we just have to match the faces calling eachother by the sides that they call eachother trough.</p>
 <p>By limiting to tile pattern that fit this representation, it would also simplify the research of tile patterns.<br />The original code extended a tile pattern randomly by stitching a tile to a random side and checking for collisions on the touching sides adjacent to the stitched side.<br />Each time we extend the pattern on one edge, we can also extend it on its symmetrical edge (unless the two shapes are touching on the exact same edge), reducing sensibly the research space.<br />We also reduce the tiling test requirement at until the starting shape's sides are entirely covered, as any additional tile would be symmetrical and redundant.</p>
-<p>[TODO - this part - make the provided code output my own format of tile representations]</p>
+<p>[TODO] Unfortunately I haven't been able to make the provided code output my own format of tile representations yet</p>
 <p>Once we have possible tilings, I run them trough my visualisation script to verify that they are legitimate tile patterns and if it fills the space.<br />The visualisation simply starts from one edge (one segment), and draws clockwise the next shape.<br />Only one of the manipulated polyhedrons contains a different shape than a triangle or a square (Hexagonal antiprism contains an hexagon).</p>
-<p>[Visualisation half-done]</p>
+<p><img src="filling_space.png" alt="Filling the space with rectangle tiles" /></p>
 <p>To verify if the shape can be "rolled" into, we need to run trough:<br />Each net face to polyhedron face configuration in each orientation possible, symmetries included.<br />A branch ends if <br />-The face to polyhedron with the given orientation was already visited<br />-The polyhedron cannot roll into the given direction<br />We keep in memory where the re-visit happenned and visualise it to check if the polyhedron can fill the space, or if it only fills a band of space.</p>
-<p>[Hard to see in current version]</p>
+<p>[Hard to see in current version, must change the idea]</p>
+<p><img src="roll_in_space.png" alt="Rolling pattern for the pyramid's tiles" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
     		</div><!-- /.blurb -->
 		</div><!-- /.container -->
 		<footer>
