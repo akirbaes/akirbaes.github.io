@@ -1,74 +1,459 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>[INFO-F-420] Computational Geometry project</title><!-- link to main stylesheet -->
-		<link rel="stylesheet" type="text/css" href="/css/main.css">
-	</head>
+<html><head><title>[INFO-F-420] Computational Geometry project</title>
+
+<!-- link to main stylesheet -->
+<link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+
 	<body>
-		<nav>
-    		<ul>
-        		<li><a href="/">Home</a></li>
-	        	<li><a href="/about">About</a></li>
-        		<li><a href="/computational_geometry">CG</a></li>
-    		</ul>
-		</nav>
-		<div class="container">
-    		<div class="blurb">
-				<p>BAES Akira, Computer Science MA1</p>
-        		<h1>Rolling a Tesselation Polyhedron in its Tiling Net [unfinished]</h1>
-<p>This work is focused around <strong>regular-faced polyhedrons for which some nets are mosaics or tiling patterns</strong>.</p>
-<p>Such polyhedrons are called <strong>Tessellation Polyhedra with Regular Polygonal Faces</strong> and are the following:<br />(From "Determination of all Tessellation Polyhedra with Regular Polygonal Faces")</p>
+<nav> </nav>
 <ul>
-<li>Tetrahedron</li>
-<li>Cube</li>
-<li>Octahedron</li>
-<li>Isocahedron</li>
-<li>Hexagonal antiprism</li>
-<li>Square pyramid (j1)</li>
-<li>Elongated square pyramid (j8)</li>
-<li>Gyroelongated square pyramid (j10)</li>
-<li>Triangular dipyramid (j12)</li>
-<li>Pentagonal dipyramid (j13)</li>
-<li>Elongated triangular dipyramid (j14)</li>
-<li>Elongated square dipyramid (j15)</li>
-<li>Elongated pentagonal dipyramid (j16)</li>
-<li>Gyroelongated square dipyramid (j17)</li>
-<li>Augmented triangular prism (j49)</li>
-<li>Biaugmented triangular prism (j50)</li>
-<li>Triaugmented triangular prism (j51)</li>
-<li>Snub disphenoid (j84)</li>
-<li>Sphenocorona (j86)</li>
-<li>Augmented sphenocorona (j87)</li>
-<li>Sphenomegacorona (j88)</li>
-<li>Hebesphenomegacorona (j89)</li>
-<li>Disphenocingulum (j90)</li>
+<li><a href="/">Home</a></li>
+<li><a href="/about">About</a></li>
+<li><a href="/computational_geometry">CG</a></li>
 </ul>
-<p>The goal of this project is double:<br />1) Rewrite the code provided by my teacher which was used to determine if a Polyhedron had a tileable net, to produce all tileable nets of one Tesselation Polyhedron.</p>
-<p>Note: at this point of the project, I was unable to fullfill point 1.</p>
-<p>2) Determine if the given tiling can be "rolled" into in order to "roll" on the whole plane, by rolling the Polyhedron into its faces on its nets.</p>
-<p>In order to do 1) I simplified the set of the nets stiching I was looking for. When testing, all tesselation found so far have been symmetrical with each tile identical, meaning that they<br />-Contain translations and rotations, but no reflexion/mirroring<br />-Can be defined by the description of a single tile's neighbours, which are then repeated to create the pattern.<br />If every tesselation possible with the given shapes can be represented by this model is still an open question. (This model cannot represent central symmetry, or non-periodic patterns)</p>
-<p>A Regular-Faced Polyhedron can be represented as a dictionary of faces and their adjacent faces:<br />J1R = { #order is clockwise<br /> 0: [1,2,3,4],<br /> 1: [0,4,2],<br /> 2: [1,3,0],<br /> 3: [0,2,4],<br /> 4: [0,3,1]<br />}</p>
-<p>Based on this, I represent a tile's pattern as:<br />J1N = { #order is clockwise<br /> 0: [1,0-p,3,0+p],<br /> 1: [0,2+p,2],<br /> 2: [1,4+2*p,1-p],<br /> 3: [0,4-p,4],<br /> 4: [3+p,3,2-2*p]<br />}</p>
-<p><img src="j1_pyramid_n.png" alt="Representation of a pyramid's tiling pattern" /></p>
-<p>Internal neighbours are the number of the adjacent face on the net. External neighbours are differenciated by adding a multiple of p being the number of sides of the polyhedron to the neighbour's number. The multiple is used to show which adjacent shape is touching, in case the same shape is several times a neighbour. <br />In case a shape is its own neighbour, the inverted sign of this represent which side is linked.<br />This information is enough to create the tile pattern as we just have to match the faces calling eachother by the sides that they call eachother trough.</p>
-<p>By limiting to tile pattern that fit this representation, it would also simplify the research of tile patterns.<br />The original code extended a tile pattern randomly by stitching a tile to a random side and checking for collisions on the touching sides adjacent to the stitched side.<br />Each time we extend the pattern on one edge, we can also extend it on its symmetrical edge (unless the two shapes are touching on the exact same edge), reducing sensibly the research space.<br />We also reduce the tiling test requirement at until the starting shape's sides are entirely covered, as any additional tile would be symmetrical and redundant.</p>
-<p>[TODO] Unfortunately I haven't been able to make the provided code output my own format of tile representations yet</p>
-<p>Once we have possible tilings, I run them trough my visualisation script to verify that they are legitimate tile patterns and if it fills the space.<br />The visualisation simply starts from one edge (one segment), and draws clockwise the next shape.<br />Only one of the manipulated polyhedrons contains a different shape than a triangle or a square (Hexagonal antiprism contains an hexagon).</p>
-<p><img src="filling_space.png" alt="Filling the space with rectangle tiles" /></p>
-<p>To verify if the shape can be "rolled" into, we need to run trough:<br />Each net face to polyhedron face configuration in each orientation possible, symmetries included.<br />A branch ends if <br />-The face to polyhedron with the given orientation was already visited<br />-The polyhedron cannot roll into the given direction<br />We keep in memory where the re-visit happenned and visualise it to check if the polyhedron can fill the space, or if it only fills a band of space.</p>
-<p>[Hard to see in current version, must change the idea]</p>
-<p><img src="roll_in_space.png" alt="Rolling pattern for the pyramid's tiles" /></p>
-<p>Deliverables: <a href="/rolltiles.zip">rolltiles.zip</a></p>
-<p>Contents:</p>
-<p>shapesdraw.py, which only does part 2 (visualisation of a tile configuration)</p>
-<p>The decision if a tile configuration is rollable or not is hard to see with the current representation, so the goal of the project is not attained.</p>
-<p>The search of tile configurations is not in a useable state and is not included.</p>
-    		</div><!-- /.blurb -->
-		</div><!-- /.container -->
-		<footer>
-    		<ul>
-        		<li><a href="https://github.com/akirbaes">github.com/akirbaes</a></li>
-			</ul>
-		</footer>
-	</body>
-</html>
+<div class="container">
+<div class="blurb">
+<p>BAES Akira, Computer Science MA1</p>
+<h1>Rolling a Tesselation Polyhedron in its Tiling Net</h1>
+<p>This work is focused around <strong>regular-faced
+polyhedrons for which some nets are mosaics or tiling patterns</strong>.</p>
+<p>A <span style="font-weight: bold;">net of a
+polyhedron</span> is the adjancement of its faces on a plane in a
+way that folding the net would reconstruct the polyhedron.</p>
+<h1><img src="images/net_demo.png" alt=""><br>
+</h1>
+<p>A <span style="font-weight: bold;">tesselation
+net</span> is a net that can be used to tile (<span style="font-style: italic;">tesselate</span>) the
+plane.<br>
+<img src="images/tile_images/tesselation.png" alt=""><br>
+We will now consider convex polyhedron which only have regular faces.
+Those are the five Platonic solids wich are completely regluar, the 13
+Archimedean solids, prisms and antiprisms, and 92 Johnson solids.<br>
+From those, it was shown that 23 have tesselation nets.<br>
+<img src="images/white/all.gif" alt=""><br>
+Those tesselations can be seen as an infinite grid of shapes filling
+the space. My goal is to see how the polyhedron building the tiling can
+roll in it.<br>
+<br>
+<span style="font-weight: bold;">Rolling</span>
+means that the polyhedron starts somewhere on its net, with its
+corresponding face down. It then "rolls" to an adjacent polygon.<br>
+Not all tesselation polyhedron roll in the same patterns.<br>
+<br>
+There are mainly<span style="font-weight: bold;"> three
+types of patterns</span>:<br>
+</p>
+<ul>
+<li>Shapes that can roll in the full space</li>
+</ul>
+<p><img src="images/tile_images/ex1.png" alt=""><br>
+</p>
+<ul>
+<li>Shapes that can roll in a "corridor"</li>
+</ul>
+<p><img src="images/tile_images/Image4.png" alt=""><br>
+</p>
+<ul>
+<li>Shapes that cannot escape a given area</li>
+</ul>
+<p><br>
+There are many ways to unfold a single polyhedron. By considering the
+adjacent faces of a polyhedron as connected nodes, we can see each net
+as a specific spanning tree.<br>
+<img src="images/capture_028_21042017_211905.png" alt=""><br>
+Many such produced nets are identical due to the internal symmetries of
+our polyhedrons. There are also symmetrical versions of each net that
+can be removed.<br>
+<img src="images/capture_027_21042017_211853.png" alt=""><br>
+<br>
+Those nets can then be tested for tesselation. The process involves
+sticking two versions of the net together, forming a bigger shape.<br>
+By sticking two shapes together, we can often tell early if it will
+become a tesselation net or not: during the stiching, we fuse the edges
+of the two shapes together, so if a side has an angle that goes inside
+the shape, we know it will not work.<br>
+<img src="images/sides.png" alt=""><br>
+<br>
+A tesselation can be represented very simply. Take this tesselation of
+a cube for example:<br>
+<img src="images/white/cube_tess.png" alt=""><br>
+If you look closely, each net is similarly attached to its neighbours. <br>
+This gives us a way to model a tesselation net, by indicating for each
+side what face should be adjacent. By simply repeating that pattern we
+can reproduce the whole tesselation.<br>
+<img src="images/tile_images/capture_016_21042017_193502.png" alt=""> &nbsp; <img src="images/tile_images/capture_007_21042017_193258.png" alt=""><br>
+Of course, two problems arise:<br>
+When a shape has twice the same neighbour, there is no way to tell from
+which way the shapes are supposed to be attached.<br>
+When a shape has itself as a neighbour twice, it becomes hard to tell
+from which way they are supposed to be attached.<br>
+<br>
+Hence, instead of simply indicating the neighbour's face number, we add
+a multiple of the amount of faces to differenciate directions.<br>
+We use:<br>
+len : amount of faces<br>
+</p>
+<ul>
+<li>face ID : the net's internal ID</li>
+<li>attach ID: 0 if it's an internal link or if the face is
+attached to itself simply, k&gt;0 if the face is leaving its net,
+different k if a face is attached several times to the same face</li>
+<li>attach sign: + and - to indicate the order of attach for
+shapes attached to themselves doubly</li>
+</ul>
+<p>So the value used will be:<br>
+</p>
+<ul>
+<li>tile ID = face ID + len * attach_id * attach sign</li>
+</ul>
+<p>From this value we can find back the original values by doing</p>
+<ul>
+<li>face ID = abs(tile ID - (tile ID % len))</li>
+<li>attach ID =&nbsp; abs(floor( tile ID / len))</li>
+<li>attach sign = sign(tile ID)</li>
+</ul>
+<p><br>
+</p>
+When a face is attached to two faces of the same ID, we can
+differenciate them trough the attach ID. See <span style="font-style: italic; font-weight: bold;">cubeTesselation</span><span style="font-weight: bold;"> </span>1, 3 where
+different attach have different k. We can ignore the attach ID the rest
+of the time.<br>
+When a face is attached to itself doubly, we can determine the
+direction it is attached to thanks to the opposite signs of the two
+links. See <span style="font-style: italic; font-weight: bold;">pyramidTesselation</span><span style="font-weight: bold;"> </span>0 where 0 is
+attached to both 0+len and 0-len. We can ignore the sign the rest of
+the time.<br>
+When a face is attached to itself simply, we ignore the attach ID or
+sign. See <span style="font-weight: bold; font-style: italic;">cubeTesselation</span>
+4 and 5.<br>
+When a face is attached to another face in the original net, we ignore
+attach ID or sign. See <span style="font-weight: bold; font-style: italic;">cubeTesselation</span>
+0.
+<p>Examples (the description of the polyhedrons are separate):<br>
+<br>
+</p><div style="margin-left: 40px;"><em>cubeTesselation = {</em><br><em>
+&nbsp;&nbsp;&nbsp; 0: [1,2,4,3],</em><br><em>
+&nbsp;&nbsp;&nbsp; 1: [0,2+len, <span style="font-weight: bold;">5</span>, <span style="font-weight: bold;">5+len</span>],</em><br><em>
+&nbsp;&nbsp;&nbsp; 2: [0,5+len,1-p,3+len],</em><br><em>
+&nbsp;&nbsp;&nbsp; 3: [0,<span style="font-weight: bold;">
+4+len</span>, <span style="font-weight: bold;">4+2*</span></em><em><span style="font-weight: bold;">len</span></em><em><span style="font-weight: bold;"></span>,2-len],</em><br><em>
+&nbsp;&nbsp;&nbsp; 4: [0,3-2*len,3-len,<span style="font-weight: bold;">4</span>+0],</em><br><em>
+&nbsp;&nbsp;&nbsp; 5: [<span style="font-weight: bold;">5</span>+0,2-len,1-len,1]</em><br><em>
+}</em><br></div><div style="margin-left: 40px;"><em>pyramidTesselation = {</em><br><em>
+&nbsp;&nbsp;&nbsp; 0: [1, <span style="font-weight: bold;">0-len</span>, 3, <span style="font-weight: bold;">0+len</span>],</em><br><em>
+&nbsp;&nbsp;&nbsp; 1: [2,0,2+len],</em><br><em>
+&nbsp;&nbsp;&nbsp; 2: [1,4+len,1-len],</em><br><em>
+&nbsp;&nbsp;&nbsp; 3: [4,0,4+len],</em><br><em>
+&nbsp;&nbsp;&nbsp; 4: [3,2-len,3-len]</em><br><em>
+}</em><br></div><p>
+<br>
+There might be ways to build a tesselation net that doesn't fit this
+representation (for examples patterns that would follow a central
+symmetry), but I haven't encountered any so far in the tesselation nets.<br>
+<br>
+Because I couldn't translate the original program's representation into
+my own representation, I had to do it by hand. Thus, I only have a few
+tesselations nets represented.<br>
+<br>
+Here are the findings:<br>
+Rolling pattern:&nbsp;</p><ul><li>Dithered red: visited</li><li>Solid red: visited with exact orientation (translation to the starting point)</li><li>Dithered blue: starting point</li><li>If a starting point is surrounded by solid red, by recursion it can cover the whole space.</li><li>If
+a starting point is surrounded by dithered red but there exist solid
+red parts, it can cover the whole space by translation to the solid red
+parts.</li></ul><table>
+<tbody>
+<tr>
+<th>Polyhedron</th>
+<th>Nets</th>
+<th>Completion</th>
+<th>Tesselation nets</th>
+<th>Example of net</th><td>Example of tesselation</td><td>Rolling pattern</td>
+</tr>
+<tr>
+<td>Tetrahedron</td>
+<td>3</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> <img src="images/tile_images/capture_013_21042017_193453.png" alt=""></td><td><a href="images/tile_images/capture_014_21042017_193457.png">image</a><br></td><td><a href="images/tile_images/capture_015_21042017_193500.png">total</a></td>
+</tr>
+<tr>
+<td>Cube</td>
+<td>11</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> <img src="images/tile_images/capture_016_21042017_193502.png" alt=""></td><td><a href="images/tile_images/capture_017_21042017_193505.png">image</a></td><td><a href="images/tile_images/capture_018_21042017_193515.png">total</a></td>
+</tr>
+<tr>
+<td>Octahedron</td>
+<td>11</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> <img src="images/tile_images/capture_019_21042017_193518.png" alt=""></td><td><a href="images/tile_images/capture_020_21042017_193522.png">image</a></td><td><a href="images/tile_images/capture_021_21042017_193539.png">total coverage</a></td>
+</tr>
+<tr>
+<td>Icosahedron</td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td>Hexagonal antiprism</td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td>Square pyramid (j1)</td>
+<td>8</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> <img src="images/tile_images/capture_007_21042017_193258.png" alt=""></td><td><a href="images/tile_images/capture_008_21042017_193302.png">image</a></td><td><a href="images/tile_images/capture_029_21042017_222729.png">band</a></td>
+</tr>
+<tr>
+<td>Elongated square pyramid (j8)</td>
+<td>448</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td>Gyroelongated square pyramid (j10)</td>
+<td>3421</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td>Triangular dipyramid (j12)</td>
+<td>8</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td>Pentagonal dipyramid (j13)</td>
+<td>98</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td>Elongated triangular dipyramid (j14)</td>
+<td>156</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> <img src="images/tile_images/capture_022_21042017_193541.png" alt=""></td><td><a href="images/tile_images/capture_023_21042017_193545.png">image</a></td><td><a href="images/tile_images/capture_024_21042017_193547.png">band</a></td>
+</tr>
+<tr>
+<td>Elongated square dipyramid (j15)</td>
+<td>2010</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Elongated pentagonal dipyramid (j16) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Gyroelongated square dipyramid (j17) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Augmented triangular prism (j49) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Biaugmented triangular prism (j50) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Triaugmented triangular prism (j51) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Snub disphenoid (j84) </td>
+<td>958</td>
+<td>All<br>
+No duplicate</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Sphenocorona (j86) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> <img src="images/tile_images/capture_025_21042017_193549.png" alt=""></td><td><a href="images/tile_images/capture_026_21042017_193553.png">image</a></td><td><a href="images/tile_images/capture_027_21042017_193610.png">total</a></td>
+</tr>
+
+<tr>
+<td> Augmented sphenocorona (j87) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Sphenomegacorona (j88) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Hebesphenomegacorona (j89) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+<tr>
+<td> Disphenocingulum (j90) </td>
+<td></td>
+<td><br>
+</td>
+<td> </td>
+<td> </td><td></td><td></td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: center;"><strong></strong></p><p style="text-align: center;"><strong></strong></p><p style="text-align: center;"><strong></strong></p><p style="text-align: center;"><strong></strong></p><p style="text-align: center;"><strong>--------Implementation:</strong>--------</p><p>The goal of this project was double:<br>
+1) Rewrite the code provided by my teacher which was used to determine
+if a Polyhedron had a tileable net, to produce all tileable nets of one
+Tesselation Polyhedron.</p>
+<p>At this point of the project, I was unable to completely fullfill
+point 1.</p>
+<p>2) Determine if the given tiling can be "rolled" into in order
+to "roll" on the whole plane, by rolling the Polyhedron into its faces
+on its nets.</p><p>At this point of the project, I can visually assess the rolling type.</p>
+<p>In order to do 1) I simplified the set of the nets stiching I
+was looking for. When testing, all tesselation found so far have been
+symmetrical with each tile identical, meaning that they<br>
+-Contain translations and rotations, but no reflexion/mirroring<br>
+-Can be defined by the description of a single tile's neighbours, which
+are then repeated to create the pattern.<br>
+If every tesselation possible with the given shapes can be represented
+by this model is still an open question. (This model cannot represent
+central symmetry, or non-periodic patterns)</p>
+<p>A Regular-Faced Polyhedron can be represented as a dictionary
+of faces and their adjacent faces:<br></p><div style="margin-left: 40px;"><em>
+J1R = { #order is clockwise<br>
+0: [1,2,3,4],<br>
+1: [0,4,2],<br>
+2: [1,3,0],<br>
+3: [0,2,4],<br>
+4: [0,3,1]<br>
+}</em></div><p></p>
+<p>Based on this, I represent a tile's pattern as:<br></p><div style="margin-left: 40px;"><em>
+J1N = { #order is clockwise<br>
+0: [1,0-p,3,0+p],<br>
+1: [0,2+p,2],<br>
+2: [1,4+2*p,1-p],<br>
+3: [0,4-p,4],<br>
+4: [3+p,3,2-2*p]<br>
+}</em></div><p></p>
+<p><img src="j1_pyramid_n.png" alt="Representation of a pyramid's tiling pattern"></p>
+<p>Internal neighbours are the number of the adjacent face on the
+net. External neighbours are differenciated by adding a multiple of p
+being the number of sides of the polyhedron to the neighbour's number.
+The multiple is used to show which adjacent shape is touching, in case
+the same shape is several times a neighbour. <br>
+In case a shape is its own neighbour, the inverted sign of this
+represent which side is linked.<br>
+This information is enough to create the tile pattern as we just have
+to match the faces calling eachother by the sides that they call
+eachother trough.</p>
+<p>By limiting to tile pattern that fit this representation, it
+would also simplify the research of tile patterns.<br>
+The original code extended a tile pattern randomly by stitching a tile
+to a random side and checking for collisions on the touching sides
+adjacent to the stitched side.<br>
+Each time we extend the pattern on one edge, we can also extend it on
+its symmetrical edge (unless the two shapes are touching on the exact
+same edge), reducing sensibly the research space.<br>
+We also reduce the tiling test requirement at until the starting
+shape's sides are entirely covered, as any additional tile would be
+symmetrical and redundant.</p><p>[TODO] Unfortunately I haven't been able to make the provided
+code output my own format of tesselation representations yet</p>I figured how to remove duplicate nets (by following the angles and comparing them in order and disorder for mirrors).<br><br><div style="margin-left: 40px;"><em>def not_duplicate(oldpaths,path,mirrors=True):</em><br><em>&nbsp;&nbsp;&nbsp; size = len(path)</em><br><em>&nbsp;&nbsp;&nbsp; for t in oldpaths:</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for start in range(size):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; counter = 0</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for i in range(1,size): #ignore the first orientation</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if(path[i] != t[(start+i)%size]):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; counter+=1</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if(counter==size-1):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return False</em><br><em>&nbsp;&nbsp;&nbsp; if(mirrors==True):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for t in oldpaths:</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for start in range(size):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; counter = 0</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for i in range(1,size):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if(path[i]!=t[(start-i)%size]):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; counter+=1</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if(counter==size-1):</em><br><em>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return False</em><br><em>&nbsp;&nbsp;&nbsp; #print("Accepted path:",path)</em><br><em>&nbsp;&nbsp;&nbsp; return True</em><br></div>&nbsp;&nbsp;&nbsp; <p>This
+part is in tileset_v2.py. It is still too slow to be useable on my
+computer, as I could only get partial results in 6+ hours for
+polyhedrons with more than 15 faces.</p><p>I could not rewrite the
+tesselation stiching part to keep in memory the faces it manipulates
+(the program ignores the faces and uses sides only).</p><p></p>
+<p>Once we have possible tilings (which I produced manually), I run them trough my
+visualisation script to verify that they are legitimate tile patterns
+and if it fills the space.<br>
+The visualisation simply starts from one edge (one segment), and draws
+clockwise the next shape.<br>
+Only one of the manipulated polyhedrons contains a different shape than
+a triangle or a square (Hexagonal antiprism contains an hexagon).</p>
+<p><img src="filling_space.png" alt="Filling the space with rectangle tiles"></p>
+<p>To verify if the shape can be "rolled" into, we need to run
+trough:<br>
+Each net face to polyhedron face configuration in each orientation
+possible, symmetries included.<br>
+A branch ends if <br>
+-The face to polyhedron with the given orientation was already visited<br>
+-The polyhedron cannot roll into the given direction<br>
+We keep in memory where the re-visit happenned and visualise it to
+check if the polyhedron can fill the space, or if it only fills a band
+of space.</p><div style="text-align: center;"><a href="file:///rolltiles.zip"><img src="images/tile_images/capture_009_21042017_193305.png" alt=""></a></div><p>When
+we reach a place in the same orientation as the original orientaiton,
+we color it in solid red to show that this can be used for symmetries.</p><p style="text-align: center;"><img src="images/tile_images/capture_021_21042017_193539.png" alt=""></p><p>To determine if a roll can fill the whole space, I could probably&nbsp;check if the neighbouring nets are solid red. In that case, the whole space can be filled.</p><p style="text-align: center;"><img src="images/tile_images/capture_027_21042017_193610.png" alt=""></p><p style="text-align: left;">However
+sometimes the neighbours are in dithered red. Maybe I could use some
+symmetry properties of the polyhedrons to colore in solid red more
+areas at once.</p><p style="text-align: center;"><img src="images/tile_images/capture_030_21042017_193633.png" alt=""></p><p>Deliverables: <a href="/rolltiles.zip">rolltiles.zip</a></p>
+<p>Contents:</p><p>tileset.py, which only generates nets ready to be tested for tesselation.</p><p>It
+uses the provided code to open polyhedron's .wrl, and save the net data
+in a .py format. It does not look for tesselations in those nets [todo].</p>
+<p>shapesdraw.py, which only does part 2 (visualisation of a tile
+configuration) of a select few shapes that I manually encoded.</p><p>The
+search of tesselations in the nets is not in a useable state
+and is not included. I would need to build a second list containing the
+face to edge links, and complete it as the stiching removes edges.</p>
+</div>
+<!-- /.blurb --> </div>
+<!-- /.container --> <footer> </footer>
+<ul>
+<li><a href="https://github.com/akirbaes">github.com/akirbaes</a></li>
+</ul>
+</body></html>
